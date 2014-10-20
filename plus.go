@@ -39,7 +39,7 @@ type ClaimSet struct {
 // GetTokens takes an authentication code, client ID & client secret
 // and exchanges it with the OAuth endpoint for a Google API bearer
 // token and a Google+ ID token
-func GetTokens(code, clientID, clientSecret string) (accessToken string, idToken string, err error) {
+func GetTokens(code, clientID, clientSecret string) (accessToken, idToken string, err error) {
 	// Exchange the authorization code for a credentials object via a POST request
 	addr := "https://accounts.google.com/o/oauth2/token"
 	values := url.Values{

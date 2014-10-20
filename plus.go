@@ -28,10 +28,10 @@ type Token struct {
 	AccessToken string `json:"access_token"`
 	TokenType   string `json:"token_type"`
 	ExpiresIn   int    `json:"expires_in"`
-	IdToken     string `json:"id_token"`
+	IDToken     string `json:"id_token"`
 }
 
-// ClaimSet represents an IdToken response.
+// ClaimSet represents an IDToken response.
 type ClaimSet struct {
 	Sub string
 }
@@ -53,7 +53,7 @@ func GetTokens(code, clientID, clientSecret string) (accessToken string, idToken
 
 	resp, err := http.PostForm(addr, values)
 	if err != nil {
-		return "", "", fmt.Errorf("Exchanging code: %v", err)
+		return "", "", fmt.Errorf("exchanging code: %v", err)
 	}
 
 	defer resp.Body.Close()
@@ -62,10 +62,10 @@ func GetTokens(code, clientID, clientSecret string) (accessToken string, idToken
 	var token Token
 	err = json.NewDecoder(resp.Body).Decode(&token)
 	if err != nil {
-		return "", "", fmt.Errorf("Decoding access token: %v", err)
+		return "", "", fmt.Errorf("decoding access token: %v", err)
 	}
 
-	return token.AccessToken, token.IdToken, nil
+	return token.AccessToken, token.IDToken, nil
 }
 
 // DecodeIDToken takes an ID Token and decodes it to fetch the Google+ ID within

@@ -2,8 +2,8 @@ package plus
 
 import (
 	"encoding/base64"
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
@@ -11,7 +11,6 @@ import (
 type ClaimSet struct {
 	Sub string
 }
-
 
 // DecodeIdToken takes an ID Token and decodes it to fetch the Google+ ID within
 func DecodeIdToken(idToken string) (gplusID string, err error) {

@@ -1,10 +1,15 @@
 // Package plus provides utilities for Google+ Sign-In (server-side apps)
 //
-// Example:
+// Examples:
+//
+//  accessToken, idToken, err := plus.GetTokens(code, clientID, clientSecret)
+//  if err != nil {
+//      log.Fatal("Error getting tokens: ", err)
+//  }
 //
 //   gplusID, err := plus.DecodeIDToken(idToken)
 //   if err != nil {
-//   	log.Fatal("Error decoding ID token: ", err)
+//      log.Fatal("Error decoding ID token: ", err)
 //   }
 
 package plus
@@ -13,12 +18,54 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/url"
 	"strings"
 )
+
+// Token represents an OAuth token response.
+type Token struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int    `json:"expires_in"`
+	IdToken     string `json:"id_token"`
+}
 
 // ClaimSet represents an IdToken response.
 type ClaimSet struct {
 	Sub string
+}
+
+// GetTokens takes an authentication code, client ID & client secret
+// and exchanges it with the OAuth endpoint for a Google API bearer
+// token and a Google+ ID token
+func GetTokens(code, clientID, clientSecret string) (accessToken string, idToken string, err error) {
+	// Exchange the authorization code for a credentials object via a POST request
+	addr := "https://accounts.google.com/o/oauth2/token"
+	values := url.Values{
+		"Content-Type":  {"application/x-www-form-urlencoded"},
+		"code":          {code},
+		"client_id":     {clientID},
+		"client_secret": {clientSecret},
+		"redirect_uri":  {"postmessage"},
+		"grant_type":    {"authorization_code"},
+	}
+
+	resp, err := http.PostForm(addr, values)
+	if err != nil {
+		return "", "", fmt.Errorf("Exchanging code: %v", err)
+	}
+
+	defer resp.Body.Close()
+
+	// Decode the response body into a token object
+	var token Token
+	err = json.NewDecoder(resp.Body).Decode(&token)
+	if err != nil {
+		return "", "", fmt.Errorf("Decoding access token: %v", err)
+	}
+
+	return token.AccessToken, token.IdToken, nil
 }
 
 // DecodeIDToken takes an ID Token and decodes it to fetch the Google+ ID within

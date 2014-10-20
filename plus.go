@@ -22,7 +22,7 @@ type ClaimSet struct {
 }
 
 // DecodeIdToken takes an ID Token and decodes it to fetch the Google+ ID within
-func DecodeIdToken(idToken string) (gplusID string, err error) {
+func DecodeIDToken(idToken string) (gplusID string, err error) {
 	// An ID token is a cryptographically-signed JSON object encoded in base 64.
 	// Normally, it is critical that you validate an ID token before you use it,
 	// but since you are communicating directly with Google over an
@@ -36,16 +36,16 @@ func DecodeIdToken(idToken string) (gplusID string, err error) {
 		// Check that the padding is correct for a base64decode
 		parts := strings.Split(idToken, ".")
 		if len(parts) < 2 {
-			return "", fmt.Errorf("Malformed ID token")
+			return "", fmt.Errorf("malformed ID token")
 		}
 		// Decode the ID token
 		b, err := base64Decode(parts[1])
 		if err != nil {
-			return "", fmt.Errorf("Malformed ID token: %v", err)
+			return "", fmt.Errorf("malformed ID token: %v", err)
 		}
 		err = json.Unmarshal(b, &set)
 		if err != nil {
-			return "", fmt.Errorf("Malformed ID token: %v", err)
+			return "", fmt.Errorf("malformed ID token: %v", err)
 		}
 	}
 	return set.Sub, nil

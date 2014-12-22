@@ -1,23 +1,10 @@
-// Package plus provides utilities for Google+ Sign-In (server-side apps)
-//
-// Examples:
-//
-//  accessToken, idToken, err := plus.GetTokens(code, clientID, clientSecret)
-//  if err != nil {
-//      log.Fatal("Error getting tokens: ", err)
-//  }
-//
-//   gplusID, err := plus.DecodeIDToken(idToken)
-//   if err != nil {
-//      log.Fatal("Error decoding ID token: ", err)
-//   }
-
 package plus
 
 import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -100,6 +87,7 @@ func DecodeIDToken(idToken string) (gplusID string, err error) {
 
 func base64Decode(s string) ([]byte, error) {
 	// add back missing padding
+	log.Println("Hello")
 	switch len(s) % 4 {
 	case 2:
 		s += "=="
